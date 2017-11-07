@@ -1,2 +1,4 @@
 # canvas-learning
-CANVAS LEARNING
+
+### 文件结构
+  * canvas-gamme:canvas游戏。

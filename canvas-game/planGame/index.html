@@ -295,7 +295,7 @@
 						this.paint();
 					}
 				})
-
+				//碰撞检测，吃道具
 				sprites.foreach(function(){
 					if(this.name==="food"&&this.visible){
 						var tjuli = Math.sqrt(Math.pow(this.left-myplan.left , 2)+Math.pow(this.top-myplan.top , 2));
@@ -312,6 +312,7 @@
 							}
 						}
 					}
+					//碰撞检测，敌机跟战机碰撞
 					if(this.name==="badPlan"&&myplan.visible&&!myplan.god){
 						var juli = Math.sqrt(Math.pow(this.left-myplan.left , 2)+Math.pow(this.top-myplan.top , 2));
 						if(juli<planSize().w){
@@ -324,7 +325,7 @@
 						}
 					}
 
-					this.paint();
+					this.paint();//遍历sprites，当不满足上面的if的条件，那么可能是星星的paint，改变星星的top,left,这样星星就会移动了
 				});
 
 				if(myplan){
@@ -337,6 +338,7 @@
 					ctx.textAlign = "right";
 					ctx.fillText("Tips:按方向键:移动 ，按“Z”“C”键旋转飞机" , canvas.width-10 , 18);
 
+					//道具掉落，道具只有levelup，speedup,god
 					if(foodDate===null){
 						foodDate = new Date();
 					}else {

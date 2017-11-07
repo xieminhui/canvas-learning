@@ -27,8 +27,8 @@
       this.rotateRight = false;
       this.fire = true;
       this.isgood = true;
-      this.firePerFrame = 40;
-      this.fireLevel = 1;
+      this.firePerFrame = 40;//射速
+      this.fireLevel = 1;//子弹列数，一排，多排，全屏。。
       this.god = false;
     } else if (name === "star") {
       this.width = Math.random() * 2;
@@ -73,21 +73,21 @@
     constructor: Sprite,
     paint: function() {
       if (this.name === "badPlan") {
-        this.update();
+        this.update();//敌机的不同级别
       }
 
       if (this.painter !== undefined && this.visible) {
         if (this.name !== "badPlan") {
-          this.update();
+          this.update();//这里的条件导致update范围很广，可能是star,plan,missle...
         }
         if (this.name === "plan" || this.name === "missle" || this.name === "badPlan") {
           ctx.save();
-          ctx.translate(this.left, this.top);
-          ctx.rotate(this.rotateAngle);
+          ctx.translate(this.left, this.top);//将坐标轴原点移动到自己的位置上
+          ctx.rotate(this.rotateAngle);//旋转角度，战机左右旋转，子弹同理
           this.painter.paint(this);
           ctx.restore();
 
-          if (this.god) {
+          if (this.god) {//无敌保护罩
             ctx.beginPath();
             ctx.arc(this.left, this.top, (Math.random() * 0.2 + 1) * planWidth / 2, 0, 2 * Math.PI);
             ctx.strokeStyle = "#FFF";
@@ -179,32 +179,41 @@
   W.planBehavior = [
     {
       execute: function(sprite, time) {
+        //往上移动，存在上边界限定，只要小于飞机高度一半，飞机不往上移动了，否则移动的时候每次减掉2
         if (sprite.toTop) {
           sprite.top = sprite.top < planHeight / 2 ? sprite.top : sprite.top - sprite.velocityY;
         }
+        //往左移动，存在左边界限定，只要小于飞机宽度一半，飞机不往左移动了，否则移动的时候每次减掉3
         if (sprite.toLeft) {
           sprite.left = sprite.left < planWidth / 2 ? sprite.left : sprite.left - sprite.velocityX;
         }
-        if (sprite.toRight) {
+          //往右移动，存在右边界限定，只要大于canvas宽度，飞机不往右移动了，否则移动的时候每次加上3
+          if (sprite.toRight) {
           sprite.left = sprite.left > canvas.width - planWidth / 2 ? sprite.left : sprite.left + sprite.velocityX;
         }
+          //往下移动，存在下边界限定，只要大于canvas高度加去飞机一半高，飞机不往下移动了，否则移动的时候每次加上2
         if (sprite.toBottom) {
           sprite.top = sprite.top > canvas.height - planHeight / 2 ? sprite.top : sprite.top + sprite.velocityY;
         }
+        //飞机往左边旋转，每次减少0.06，大概52度。
         if (sprite.rotateLeft) {
           sprite.rotateAngle -= sprite.rotateSpeed;
         }
+        //飞机往右旋转，每次增加0.06，大概52度。
         if (sprite.rotateRight) {
           sprite.rotateAngle += sprite.rotateSpeed;
         }
+        //初始化isActive 为false
         if (sprite.fire && !sprite.painter.isActive) {
           sprite.painter.isActive = true;
           this.shot(sprite);
         }
       },
+        //开火
       shot: function(sprite) {
         this.addMissle(sprite, sprite.rotateAngle);
         var missleAngle = 0.1
+        //子弹按列数发射，左右同时旋转相同角度，角度为3.14/0.1，大概30度。
         for (var i = 1; i < sprite.fireLevel; i++) {
           this.addMissle(sprite, sprite.rotateAngle - i * missleAngle);
           this.addMissle(sprite, sprite.rotateAngle + i * missleAngle);
@@ -226,6 +235,7 @@
             missles[j].top = sprite.top;
             missles[j].rotateAngle = angle;
             var missleSpeed = 20;
+            //旋转后需要根据直角三角形的正余弦定理求得偏移量
             missles[j].velocityX = missleSpeed * Math.sin(-missles[j].rotateAngle);
             missles[j].velocityY = missleSpeed * Math.cos(-missles[j].rotateAngle);
             missles[j].visible = true;
@@ -403,7 +413,7 @@
           ctx.drawImage(img, 144, 0, planWidth, planWidth, -planWidth / 2, -planHeight / 2, planWidth, planWidth);
           break;
       }
-
+      //血条
       ctx.strokeStyle = "#FFF";
       ctx.fillStyle = "#F00";
       var bloodHeight = 1;

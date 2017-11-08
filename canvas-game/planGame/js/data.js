@@ -33,6 +33,7 @@ var explosionCells = [
 	{x:830 , y:0 , w:67 , h:64}
 ]
 
+//飞机射击的动画效果，通过切换图片完成
 var planCells = [
 	{x:0 , y:0 , w:24 , h:24},
 	{x:24 , y:0 , w:24 , h:24},

@@ -26,6 +26,7 @@
       this.rotateLeft = false;
       this.rotateRight = false;
       this.fire = true;
+      this.fireUp = 1;//火力最low为1
       this.isgood = true;
       this.firePerFrame = 40;//射速
       this.fireLevel = 1;//子弹列数，一排，多排，全屏。。
@@ -75,14 +76,14 @@
       if (this.name === "badPlan") {
         this.update();//敌机的不同级别,
       }
-
+//missle初始visible为false,通过myplan,
       if (this.painter !== undefined && this.visible) {
         if (this.name !== "badPlan") {
           this.update();//这里的条件导致update范围很广，可能是star,plan,missle...
         }
         if (this.name === "plan" || this.name === "missle" || this.name === "badPlan") {
           ctx.save();
-          ctx.translate(this.left, this.top);//将坐标轴原点移动到自己的位置上
+          ctx.translate(this.left, this.top);//将坐标轴原点移动到自己的位置上,对于misssle,实现子弹在canvas移动
           ctx.rotate(this.rotateAngle);//旋转角度，战机左右旋转，子弹同理
           this.painter.paint(this);
           ctx.restore();
@@ -144,7 +145,7 @@
 
   //特制飞机精灵表绘制器
   W.controllSpriteSheetPainter = function(cells, spritesheet) {
-    this.cells = cells || [];
+    this.cells = cells || [];//cells在data.js里面，保存飞机的图片位置
     this.cellIndex = 0;
     this.dateCount = null;
     this.isActive = false;
@@ -153,6 +154,7 @@
   }
   controllSpriteSheetPainter.prototype = {
     advance: function() {
+      //飞机激活后，通过cellindex值的增加控制显示不同的飞机图片，达到射击动画效果
       if (this.isActive) {
         this.cellIndex++;
         if (this.cellIndex === this.cells.length) {
@@ -231,11 +233,12 @@
       addMissle: function(sprite, angle) {
         for (var j = 0; j < missles.length; j++) {
           if (!missles[j].visible) {
+            missles[j].fireUp = sprite.fireUp;
             missles[j].isgood = true;
             missles[j].left = sprite.left;
             missles[j].top = sprite.top;
             missles[j].rotateAngle = angle;
-            var missleSpeed = 20;
+            var missleSpeed = 10;
             //旋转后需要根据直角三角形的正余弦定理求得偏移量
             missles[j].velocityX = missleSpeed * Math.sin(-missles[j].rotateAngle);
             missles[j].velocityY = missleSpeed * Math.cos(-missles[j].rotateAngle);
@@ -305,8 +308,10 @@
 
   W.missleBehavior = [{
     execute: function(sprite, time) {
+      //子弹坐标改变，实现子弹飞行
       sprite.left -= sprite.velocityX;
       sprite.top -= sprite.velocityY;
+      //超出canvas的子弹小不显示
       if (sprite.left < -missleWidth / 2 || sprite.top < -missleHeight / 2 || sprite.left > canvas.width + missleWidth / 2 || sprite.top > canvas.height + missleHeight / 2) {
         sprite.visible = false;
       }
@@ -315,14 +320,20 @@
 
   W.misslePainter = {
     paint: function(sprite) {
+      var img = new Image();
       if (sprite.isgood) {
-        var img = new Image();
-        img.src = "../planGame/image/plasma.png"
-        ctx.drawImage(img, -missleWidth / 2 + 1, -missleHeight / 2 + 1, missleWidth, missleHeight);
+          if(sprite.fireUp === 1) {
+              img.src = "../planGame/image/plasma.png";
+          }else if(sprite.fireUp === 2){
+              img.src = "../planGame/images/zidang1.png";
+          }else if(sprite.fireUp === 3){
+              img.src = "../planGame/images/zidang2.png";
+          }
+          ctx.drawImage(img, -missleWidth / 2 + 1, -missleHeight / 2 + 1, missleWidth, missleHeight);
       } else {
         ctx.beginPath();
         ctx.fillStyle = "#f00";
-        ctx.arc(0, 0, 3, 0, 2 * Math.PI);
+        ctx.arc(0, 0, 3, 0, 2 * Math.PI);//前面的操作已经移动了坐标轴，移动到子丹
         ctx.fill();
       }
     }

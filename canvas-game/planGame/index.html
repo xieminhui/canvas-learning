@@ -8,7 +8,7 @@
 		.showBg{background-color:transparent !important;}
 		.showSomething{position: fixed;left: 20px;top: 20px;}
 		.game{width: 700px;margin: auto;height: 100%;position: relative;}
-		.movebg{width:100%;height: 200%;background: url(image/bg_1_1.jpg);background-size:100% 50%;position: absolute;top: 0px;transform: translateY(-50%);-webkit-transform: translateY(-50%);-moz-transform: translateY(-50%);-webkit-animation: bganimate 10s infinite linear;animation: bganimate 10s infinite linear;-moz-animation: bganimate 10s infinite linear;z-index:-1;}
+		.movebg{width:100%;height: 200%;background: url(images/bg1.jpg);background-size:100% 50%;position: absolute;top: 0px;transform: translateY(-50%);-webkit-transform: translateY(-50%);-moz-transform: translateY(-50%);-webkit-animation: bganimate 10s infinite linear;animation: bganimate 10s infinite linear;-moz-animation: bganimate 10s infinite linear;z-index:-1;}
 		#point{width: 100%;height: 50px;position: absolute;top: 0px;color: #FFF;font: 20px "微软雅黑";display: none;}
 		#gameStart{position: absolute;width:100%;height: 90px;text-align: center;color: #FFF;font: 20px "微软雅黑";top: 410px;display: none;}
 		#gameStart #gs-start{display: inline-block;width: 180px;height: 60px;background-color: #CCC;color: #000;cursor: pointer;line-height: 60px;border-radius: 10px;border:5px solid #FFF;}
@@ -18,6 +18,8 @@
 		#verygod{position: absolute;display: block;right: -150px;top: 150px;width: 140px;text-align: center}
 		#pretygod{position: absolute;display: block;right: -150px;top: 200px;width: 140px;text-align: center}
 		#nogod{position: absolute;display: block;right: -150px;top: 250px;width: 140px;text-align: center}
+		#zidang1{position: absolute;display: block;right: -150px;top: 300px;width: 140px;text-align: center}
+		#zidang2{position: absolute;display: block;right: -150px;top: 350px;width: 140px;text-align: center}
 		@-webkit-keyframes bganimate{
 			from{-webkit-transform: translateY(-50%);}
 			to{-webkit-transform: translateY(0);}
@@ -41,6 +43,8 @@
 		<button id="verygod">超神属性</button>
 		<button id="pretygod">全范围</button>
 		<button id="nogod">OMG！！！！</button>
+		<button id="zidang1">test子弹1</button>
+		<button id="zidang2">test子弹1</button>
 	</div>
 	<div class="showSomething">
 		<div id="booms">爆炸使用情况(已使用/存储总量)：</div>
@@ -82,8 +86,8 @@
 
 		window.onkeydown = function(event){
 			switch(event.keyCode){
-                   //case 88:myplan.fire = true;
-                    //break;
+//                   case 88:myplan.fire = true;
+//                    break;
 				case 90:myplan.rotateLeft=true;//Z键，左旋转
 				break;
 				case 67:myplan.rotateRight=true;//C键，有旋转
@@ -146,7 +150,16 @@
 				myplan.firePerFrame = 5;
 			}
 		}
-
+        document.getElementById("zidang1").onclick = function(){
+            if(myplan){
+                myplan.fireUp = 2;
+            }
+        }
+        document.getElementById("zidang2").onclick = function(){
+            if(myplan){
+                myplan.fireUp = 3;
+            }
+        }
 		function boom(plan){
 			for(var j=0;j<booms.length;j++){
 				if(!booms[j].visible){
@@ -236,6 +249,7 @@
 						myplan.top = canvas.height-(planSize().h/2+10);
 						myplan.fireLevel = 1;//重生后属性注销
 						myplan.firePerFrame = 40;
+						myplan.fireUP = 1;
                         myplan.rotateAngle=0;
                         myplan.god = true;//重生后一段时间无敌
                         setTimeout(function(){
@@ -309,6 +323,7 @@
 								break;
                                 case "God":myplan.god = true;setTimeout(function(){myplan.god = false} , 5000);
 								break;
+								case "fireUP": myplan.fireUp = myplan.fireUp>=3? myplan.fireUp:  myplan.fireUp+1;
 								default:break;
 							}
 						}
@@ -349,7 +364,7 @@
 							if(createFood&&!eatfood.visible){
 								eatfood.left = Math.random()*canvas.width-60+30;
 								eatfood.top = -30;
-								eatfood.kind = Math.random()>0.7?"LevelUP":(Math.random()>0.5?"SpeedUP":"God");
+								eatfood.kind = Math.random()>0.3?"LevelUP":(Math.random()>0.5?"SpeedUP":(Math.random()>0.6?"fireUP":"God"));
 								eatfood.visible = true;
 							}
 							foodDate = nowFoodDate;

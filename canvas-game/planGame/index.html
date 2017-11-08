@@ -278,7 +278,14 @@
 							var juli = Math.sqrt(Math.pow(missle.left-bp.left , 2)+Math.pow(missle.top-bp.top , 2));
 							if(juli<(planSize().w/2+missle.width/2) && missle.isgood){//这里用isgood判断是哪方子弹，true表示我方激光炮
 								missle.visible = false;
-								bp.blood-=50;
+								if(bp.fireUp === 1){
+                                    bp.blood-=25;
+								}else if(bp.fireUp === 2){
+                                    bp.blood-=50;
+								}else if(bp.fireUp === 3){
+                                    bp.blood-=75;
+								}
+
 								if(bp.blood<=0){//血量小于等于0,敌机阵亡
 									bp.visible = false;
 									point += bp.badKind;//得分加1

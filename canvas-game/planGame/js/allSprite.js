@@ -20,7 +20,7 @@
     this.behaviors = behaviors;
     this.rotateAngle = 0;
     this.blood = 50;
-    this.fullBlood = 50;
+    this.fullBlood = 75;
     if (name === "plan") {
       this.rotateSpeed = 0.06;
       this.rotateLeft = false;
@@ -348,27 +348,27 @@
           sprite.fullBlood = 150;
           if (random < 0.1) {
             sprite.badKind = 2;
-            sprite.fullBlood = 250;
+            sprite.fullBlood = 300;
           }
         } else if (point >= 400 && point < 600) {
-          sprite.fullBlood = 250;
+          sprite.fullBlood = 300;
           if (random < 0.2) {
             sprite.badKind = 2;
-            sprite.fullBlood = 400;
+            sprite.fullBlood = 600;
           }
           if (random < 0.1) {
             sprite.badKind = 3;
-            sprite.fullBlood = 600;
+            sprite.fullBlood = 800;
           }
         } else if (point >= 600) {
-          sprite.fullBlood = 500;
+          sprite.fullBlood = 600;
           if (random < 0.4) {
             sprite.badKind = 2;
-            sprite.fullBlood = 700;
+            sprite.fullBlood = 800;
           }
           if (random < 0.2) {
             sprite.badKind = 3;
-            sprite.fullBlood = 1000;
+            sprite.fullBlood = 1200;
           }
         }
         sprite.visible = true;

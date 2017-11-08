@@ -73,7 +73,7 @@
     constructor: Sprite,
     paint: function() {
       if (this.name === "badPlan") {
-        this.update();//敌机的不同级别
+        this.update();//敌机的不同级别,
       }
 
       if (this.painter !== undefined && this.visible) {
@@ -98,6 +98,7 @@
         }
       }
     },
+    //update中execute用来更改不用name的属性值，而paint()用来将不用的东西花在canvas上
     update: function(time) {
       if (this.behaviors) {
         for (var i = 0; i < this.behaviors.length; i++) {
@@ -365,15 +366,16 @@
         sprite.xangle = Math.random() > 0.5 ? -Math.random() * 0.03 : Math.random() * 0.03;
         sprite.top = Math.random() * canvas.height - canvas.height;
       }
+      //产生随机数，用于是否发射子弹
       if (sprite.top > 0) {
         var num = sprite.badKind === 1 ? 0.002 : 0.01;
         var random = Math.random();
         if (random < num) {
-          this.shot(sprite)
+          this.shot(sprite);//传入sprite，将sprite的left，top赋给子弹，子弹是从某台敌机发射出来的
         }
       }
-      sprite.top += sprite.speed;
-      sprite.left += 3 * Math.sin(sprite.py);
+      sprite.top += sprite.speed;//初始化top负数来的，每次加2
+      sprite.left += 3 * Math.sin(sprite.py);//left每次增加为随机数
       sprite.py += sprite.xangle;
     },
     shot: function(sprite) {
@@ -413,7 +415,7 @@
           ctx.drawImage(img, 144, 0, planWidth, planWidth, -planWidth / 2, -planHeight / 2, planWidth, planWidth);
           break;
       }
-      //血条
+      //敌机血条
       ctx.strokeStyle = "#FFF";
       ctx.fillStyle = "#F00";
       var bloodHeight = 1;

@@ -150,7 +150,7 @@
 		function boom(plan){
 			for(var j=0;j<booms.length;j++){
 				if(!booms[j].visible){
-					booms[j].left = plan.left;
+					booms[j].left = plan.left;//爆炸的坐标点就是飞机的坐标点
 					booms[j].top = plan.top;
 					booms[j].visible = true;
 
@@ -195,8 +195,8 @@
 					var x = Math.random()*(canvas.width-2*planSize().w)+planSize().w;
 					var y = Math.random()*canvas.height - canvas.height;
 					var badPlan = new Sprite("badPlan" , badPlanPainter , badPlanBehavior);
-					badPlan.top = y;
-					badPlan.left = x;
+                    badPlan.left = x;
+                    badPlan.top = y;
 					sprites.push(badPlan);
 				}
                 //子弹，包括我方的激光和敌方子弹
@@ -234,7 +234,8 @@
 						myplan.visible = true;
 						myplan.left = canvas.width/2;
 						myplan.top = canvas.height-(planSize().h/2+10);
-//						myplan.fireLevel = 1;
+						myplan.fireLevel = 1;//重生后属性注销
+						myplan.firePerFrame = 40;
                         myplan.rotateAngle=0;
                         myplan.god = true;//重生后一段时间无敌
                         setTimeout(function(){
@@ -267,7 +268,7 @@
 								if(bp.blood<=0){//血量小于等于0,敌机阵亡
 									bp.visible = false;
 									point += bp.badKind;//得分加1
-									boom(bp);
+									  boom(bp);
 								}
 							}
 						}
@@ -325,7 +326,7 @@
 						}
 					}
 
-					this.paint();//遍历sprites，当不满足上面的if的条件，那么可能是星星的paint，改变星星的top,left,这样星星就会移动了
+					this.paint();//遍历sprites并且在canvas绘制sprite，sprites属性有start，badplan,food,mypaln,这个是按顺序的
 				});
 
 				if(myplan){

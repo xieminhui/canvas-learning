@@ -268,7 +268,7 @@ var stage = {
                 if(tjuli<=(planSize().w/2+this.width/2)){
                     this.visible = false;
                     switch(this.kind){
-                        case "LevelUP":myplan.fireLevel = myplan.fireLevel>=4?myplan.fireLevel:myplan.fireLevel+1;
+                        case "LevelUP":myplan.fireLevel = myplan.fireLevel>=5?myplan.fireLevel:myplan.fireLevel+1;
                             break;
                         case "SpeedUP":myplan.firePerFrame = myplan.firePerFrame<=10?10:myplan.firePerFrame-10;
                             break;
@@ -286,8 +286,8 @@ var stage = {
                     myplan.visible = false;
                     dieNum++;
                     this.visible = false;
-                    boom(this)
-                    boom(myplan)
+                    boom(this);
+                    boom(myplan);
                     stage.myplanReborn(myplan);
                 }
             }

@@ -53,9 +53,10 @@
     } else if (name === "boom") {
       this.width = boomWidth;
     } else if (name === "food") {
-      this.width = 40;
-      this.speed = 3;
-      this.kind = "LevelUP"
+      this.width = 80;
+      this.speed = 2;
+      this.kind = "LevelUP";
+      this.cellIndex = 0;
     }
     this.toLeft = false;
     this.toTop = false;
@@ -167,6 +168,7 @@
       if (this.dateCount === null) {
         this.dateCount = new Date();
       } else {
+        //此处用于控制射速，firePerFrame值越小，射速越快
         var newd = new Date();
         var tc = newd - this.dateCount;
         if (tc > sprite.firePerFrame) {
@@ -218,8 +220,8 @@
         var missleAngle = 0.1
         //子弹按列数发射，左右同时旋转相同角度，角度为3.14/0.1，大概30度。
         for (var i = 1; i < sprite.fireLevel; i++) {
-          this.addMissle(sprite, sprite.rotateAngle - i * missleAngle);
-          this.addMissle(sprite, sprite.rotateAngle + i * missleAngle);
+          this.addMissle(sprite, sprite.rotateAngle - i * missleAngle);//左边子弹
+          this.addMissle(sprite, sprite.rotateAngle + i * missleAngle);//右边子弹
         }
 
         var audio = document.getElementsByTagName("audio");
@@ -292,17 +294,26 @@
         if (sprite.top > canvas.height + sprite.width) {
           sprite.visible = false;
         }
+        if(sss === 8){
+          sss =0;
+        }
       }
     }
   ]
-
+var sss = 0;
   W.foodPainter = {
     paint: function(sprite) {
-      ctx.fillStyle = "rgba(" + parseInt(Math.random() * 255) + "," + parseInt(Math.random() * 255) + "," + parseInt(Math.random() * 255) + ",1)"
-      ctx.font = "15px 微软雅黑"
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(sprite.kind, sprite.left, sprite.top);
+        if(eatfood.kind === 'LevelUP'){
+            var cell = shengjiCells[sss];
+        }else if(eatfood.kind === 'SpeedUP'){
+            var cell = shesuCells[sss];
+        }else if(eatfood.kind === 'fireUP'){
+            var cell = huoliCells[sss];
+        }else if(eatfood.kind === 'God'){
+            var cell = hundunCells[sss];
+        }
+        ctx.drawImage(sprite.img, cell.x, cell.y, cell.w, cell.h, sprite.left,sprite.top, cell.w, cell.h);
+        sss++;
     }
   }
 

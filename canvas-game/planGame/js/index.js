@@ -265,7 +265,7 @@ var stage = {
         sprites.foreach(function(){
             if(this.name==="food"&&this.visible){
                 var tjuli = Math.sqrt(Math.pow(this.left-myplan.left , 2)+Math.pow(this.top-myplan.top , 2));
-                if(tjuli<(myplan.width/2+this.width/2)){
+                if(tjuli<=(planSize().w/2+this.width/2)){
                     this.visible = false;
                     switch(this.kind){
                         case "LevelUP":myplan.fireLevel = myplan.fireLevel>=4?myplan.fireLevel:myplan.fireLevel+1;
@@ -300,12 +300,12 @@ var stage = {
             ctx.font="18px 微软雅黑";
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
-            ctx.fillText("Level:"+(myplan.fireLevel===4?"Max":myplan.fireLevel)+"        Speed:"+((80-myplan.firePerFrame)===70?"Max":(80-myplan.firePerFrame)) , 0 , canvas.height-18);
+            ctx.fillText("Level:"+(myplan.fireLevel===4?"Max":myplan.fireLevel)+"        Speed:"+((80-myplan.firePerFrame) >=70?"Max":(80-myplan.firePerFrame)) , 0 , canvas.height-18);
             ctx.fillText("Points:"+point+"     死亡次数:"+dieNum, 0 , 18);
             ctx.textAlign = "right";
             ctx.fillText("Tips:按方向键:移动 ，按“Z”“C”键旋转飞机" , canvas.width-10 , 18);
 
-            //道具掉落，道具只有levelup，speedup,god
+            //道具掉落
             if(foodDate===null){
                 foodDate = new Date();
             }else {
@@ -313,9 +313,26 @@ var stage = {
                 if(nowFoodDate-foodDate>1000){
                     var createFood = Math.random()<0.5?true:false;
                     if(createFood&&!eatfood.visible){
-                        eatfood.left = Math.random()*canvas.width-60+30;
+                        eatfood.left = Math.random()*canvas.width + 40;
+                        if(eatfood.left > canvas.width){
+                            eatfood.left = canvas.left - 80
+                        }
                         eatfood.top = -30;
-                        eatfood.kind = Math.random()>0.3?"LevelUP":(Math.random()>0.5?"SpeedUP":(Math.random()>0.6?"fireUP":"God"));
+                        if(Math.random() > 0.5){
+                            eatfood.kind = Math.random()>0.6?"LevelUP":"SpeedUP";
+                        }else{
+                            eatfood.kind = Math.random()>0.4?"fireUP":"God";
+                        }
+                        if(eatfood.kind === 'LevelUP'){
+                            img.src = "../planGame/images/levelUp.png";
+                        }else if(eatfood.kind === 'SpeedUP'){
+                            img.src = "../planGame/images/speedUp.png";
+                        }else if(eatfood.kind === 'fireUP'){
+                            img.src = "../planGame/images/fireUp.png";
+                        }else if(eatfood.kind === 'God'){
+                            img.src = "../planGame/images/hudun.png";
+                        }
+                        eatfood.img = img;
                         eatfood.visible = true;
                     }
                     foodDate = nowFoodDate;

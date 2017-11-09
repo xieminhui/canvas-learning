@@ -235,6 +235,7 @@
           if (!missles[j].visible) {
             missles[j].fireUp = sprite.fireUp;
             missles[j].isgood = true;
+            missles[j].fireUp = sprite.fireUp;
             missles[j].left = sprite.left;
             missles[j].top = sprite.top;
             missles[j].rotateAngle = angle;

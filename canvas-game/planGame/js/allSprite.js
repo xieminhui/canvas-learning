@@ -20,7 +20,7 @@
     this.behaviors = behaviors;
     this.rotateAngle = 0;
     this.blood = 50;
-    this.fullBlood = 75;
+    this.fullBlood = 50;
     if (name === "plan") {
       this.rotateSpeed = 0.06;
       this.rotateLeft = false;

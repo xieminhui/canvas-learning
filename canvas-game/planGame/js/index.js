@@ -191,9 +191,9 @@ var stage = {
             myplan.visible = true;
             myplan.left = canvas.width/2;
             myplan.top = canvas.height-(planSize().h/2+10);
-            myplan.fireLevel = 1;//重生后属性注销
-            myplan.firePerFrame = 40;
-            myplan.fireUP = 1;
+            //myplan.fireLevel = 1;//重生后属性注销
+            //myplan.firePerFrame = 40;
+            //myplan.fireUP = 1;
             myplan.rotateAngle=0;
             myplan.god = true;//重生后一段时间无敌
             setTimeout(function(){
@@ -223,11 +223,11 @@ var stage = {
                     if(juli<(planSize().w/2+missle.width/2) && missle.isgood){//这里用isgood判断是哪方子弹，true表示我方激光炮
                         missle.visible = false;
                         if(missle.fireUp === 1){
-                            bp.blood-=25;
-                        }else if(missle.fireUp === 2){
                             bp.blood-=50;
-                        }else if(missle.fireUp === 3){
+                        }else if(missle.fireUp === 2){
                             bp.blood-=75;
+                        }else if(missle.fireUp === 3){
+                            bp.blood-=100;
                         }
 
                         if(bp.blood<=0){//血量小于等于0,敌机阵亡
@@ -272,7 +272,7 @@ var stage = {
                             break;
                         case "SpeedUP":myplan.firePerFrame = myplan.firePerFrame<=10?10:myplan.firePerFrame-10;
                             break;
-                        case "God":myplan.god = true;setTimeout(function(){myplan.god = false} , 5000);
+                        case "God":myplan.god = true;setTimeout(function(){myplan.god = false} , 15000);
                             break;
                         case "fireUP": myplan.fireUp = myplan.fireUp>=3? myplan.fireUp:  myplan.fireUp+1;
                         default:break;

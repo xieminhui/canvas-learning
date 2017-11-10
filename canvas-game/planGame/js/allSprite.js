@@ -4,7 +4,9 @@
     planHeight = 24,
     missleWidth = 70,
     missleHeight = 70,
-    boomWidth = 60;
+    boomWidth = 60,
+    enemyWidth = 40,
+    enemyHeight = 35;
   //精灵类
   W.Sprite = function(name, painter, behaviors, args) {
     if (name !== undefined) this.name = name;
@@ -43,6 +45,7 @@
     } else if (name === "badPlan") {
       this.isgood = false;
       this.badKind = 1;
+      this.planKind = null;
       this.speed = 2;
       this.rotateAngle = Math.PI;
       this.py = Math.PI / 2;
@@ -365,27 +368,28 @@ var sss = 0;
         } else if (point >= 400 && point < 600) {
           sprite.fullBlood = 300;
           if (random < 0.2) {
-            sprite.badKind = 2;
+            sprite.badKind = 3;
             sprite.fullBlood = 600;
           }
           if (random < 0.1) {
-            sprite.badKind = 3;
+            sprite.badKind = 4;
             sprite.fullBlood = 800;
           }
         } else if (point >= 600) {
           sprite.fullBlood = 600;
           if (random < 0.4) {
-            sprite.badKind = 2;
+            sprite.badKind = 4;
             sprite.fullBlood = 800;
           }
-          if (random < 0.2) {
-            sprite.badKind = 3;
+          if (random < 0.3) {
+            sprite.badKind = 5;
             sprite.fullBlood = 1200;
           }
         }
         sprite.visible = true;
         sprite.blood = sprite.fullBlood;
         sprite.left = canvas.width / 2;
+        sprite.planKind = null;
         sprite.xangle = Math.random() > 0.5 ? -Math.random() * 0.03 : Math.random() * 0.03;
         sprite.top = Math.random() * canvas.height - canvas.height;
       }
@@ -424,26 +428,71 @@ var sss = 0;
   W.badPlanPainter = {
     paint: function(sprite) {
       var img = new Image();
-      img.src = "../planGame/image/ship.png"
+      img.src = "../planGame/images/enemyCopy.png";
       switch (sprite.badKind) {
         case 1:
-          ctx.drawImage(img, 96, 0, planWidth, planWidth, -planWidth / 2, -planHeight / 2, planWidth, planWidth);
+          img.src = "../planGame/image/ship.png"
+          ctx.drawImage(img, 120, 0, planWidth, planWidth, -planWidth / 2, -planHeight  / 2, planWidth, planWidth);
+          sprite.planKind = 0;//机机型号
           break;
 
         case 2:
-          ctx.drawImage(img, 120, 0, planWidth, planWidth, -planWidth / 2, -planHeight / 2, planWidth, planWidth);
+          if(sprite.planKind === 6){
+              ctx.drawImage(img, 200, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+              sprite.planKind = 6;
+          }else if(sprite.planKind === 7){
+              ctx.drawImage(img, 240, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+              sprite.planKind = 7;
+          }else if(Math.random()<0.5) {
+              ctx.drawImage(img, 200, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+              sprite.planKind = 6;
+          }else{
+              ctx.drawImage(img, 240, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+              sprite.planKind = 7;
+          }
           break;
 
         case 3:
-          ctx.drawImage(img, 144, 0, planWidth, planWidth, -planWidth / 2, -planHeight / 2, planWidth, planWidth);
-          break;
+            if(sprite.planKind === 2){
+                ctx.drawImage(img, 40, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 2;
+            }else if(sprite.planKind === 4){
+                ctx.drawImage(img, 120, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 4;
+            }else if(Math.random()<0.5) {
+                ctx.drawImage(img, 40, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 2;
+            }else{
+                ctx.drawImage(img, 120, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 4;
+            }
+            break;
+        case 4:
+            if(sprite.planKind === 1){
+                ctx.drawImage(img, 0, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 1;
+            }else if(sprite.planKind === 3){
+                ctx.drawImage(img, 80, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 3;
+            }else if(Math.random()<0.5) {
+                ctx.drawImage(img, 0, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 1;
+            }else{
+                ctx.drawImage(img, 80, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+                sprite.planKind = 3;
+            }
+            break;
+        case 5:
+            ctx.drawImage(img, 160, 0, enemyWidth, enemyWidth, -enemyWidth / 2, -enemyHeight / 2, enemyWidth, enemyWidth);
+            sprite.planKind = 5;
+            break;
       }
       //敌机血条
       ctx.strokeStyle = "#FFF";
       ctx.fillStyle = "#F00";
       var bloodHeight = 1;
-      ctx.strokeRect(-planWidth / 2 - 1, planHeight + bloodHeight + 3, planWidth + 2, bloodHeight + 2);
-      ctx.fillRect(planWidth / 2 - planWidth * sprite.blood / sprite.fullBlood, planHeight + bloodHeight + 3, planWidth * sprite.blood / sprite.fullBlood, bloodHeight);
+      ctx.strokeRect(-enemyWidth / 2 +1, planHeight + bloodHeight + 3, enemyWidth + 2, bloodHeight + 2);
+      ctx.fillRect(-enemyWidth / 2 +1, planHeight + bloodHeight + 3, enemyWidth * sprite.blood / sprite.fullBlood, bloodHeight);
     }
   }
 

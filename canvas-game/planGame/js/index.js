@@ -232,6 +232,7 @@ var stage = {
 
                         if(bp.blood<=0){//血量小于等于0,敌机阵亡
                             bp.visible = false;
+                            bp.planKind = null;
                             point += bp.badKind;//得分加1
                             boom(bp);
                         }
@@ -286,6 +287,7 @@ var stage = {
                     myplan.visible = false;
                     dieNum++;
                     this.visible = false;
+                    this.planKind = null;
                     boom(this);
                     boom(myplan);
                     stage.myplanReborn(myplan);
@@ -310,7 +312,7 @@ var stage = {
                 foodDate = new Date();
             }else {
                 var nowFoodDate = new Date();
-                if(nowFoodDate-foodDate>1000){
+                if(nowFoodDate-foodDate>5000){
                     var createFood = Math.random()<0.5?true:false;
                     if(createFood&&!eatfood.visible){
                         eatfood.left = Math.random()*canvas.width + 40;

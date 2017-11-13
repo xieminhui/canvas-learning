@@ -33,6 +33,7 @@
       this.firePerFrame = 40;//射速
       this.fireLevel = 1;//子弹列数，一排，多排，全屏。。
       this.god = false;
+      this.hudunsrc = null;
     } else if (name === "star") {
       this.width = Math.random() * 2;
       this.speed = 1 * this.width / 2;
@@ -91,12 +92,22 @@
           ctx.rotate(this.rotateAngle);//旋转角度，战机左右旋转，子弹同理
           this.painter.paint(this);
           ctx.restore();
-
+          if(this.fireUp >= 3){
+            this.hudunsrc = "../planGame/images/bottomImg4copy.png";
+          }
           if (this.god) {//无敌保护罩
-            ctx.beginPath();
-            ctx.arc(this.left, this.top, (Math.random() * 0.2 + 1) * planWidth / 2, 0, 2 * Math.PI);
-            ctx.strokeStyle = "#FFF";
-            ctx.stroke();
+            if(this.hudunsrc === null){
+                ctx.beginPath();
+                ctx.arc(this.left, this.top, (Math.random() * 0.2 + 1) * planWidth / 2, 0, 2 * Math.PI);
+                ctx.strokeStyle = "#FFF";
+                ctx.stroke();
+            }else{
+                var img = new Image();
+                img.src = this.hudunsrc;
+                //img.src = "../planGame/images/bottomImg4copy.png";
+                ctx.drawImage(img,this.left-35, this.top-35,70,70);
+            }
+
           }
         } else {
           this.painter.paint(this);
@@ -168,19 +179,25 @@
       }
     },
     paint: function(sprite) {
-      if (this.dateCount === null) {
-        this.dateCount = new Date();
-      } else {
-        //此处用于控制射速，firePerFrame值越小，射速越快
-        var newd = new Date();
-        var tc = newd - this.dateCount;
-        if (tc > sprite.firePerFrame) {
-          this.advance();
-          this.dateCount = newd;
-        }
+      if(this.fullPlan == true){
+          var img = new Image();
+          img.src = "../planGame/images/myplan.png";
+          ctx.drawImage(img, 0, 0, 80, 65, -40, -32.5, 80, 65);
+      }else{
+          if (this.dateCount === null) {
+              this.dateCount = new Date();
+          } else {
+              //此处用于控制射速，firePerFrame值越小，射速越快
+              var newd = new Date();
+              var tc = newd - this.dateCount;
+              if (tc > sprite.firePerFrame) {
+                  this.advance();
+                  this.dateCount = newd;
+              }
+          }
+          var cell = this.cells[this.cellIndex];
+          ctx.drawImage(this.spritesheet, cell.x, cell.y, cell.w, cell.h, -planWidth / 2, -planHeight / 2, cell.w, cell.h);
       }
-      var cell = this.cells[this.cellIndex];
-      ctx.drawImage(this.spritesheet, cell.x, cell.y, cell.w, cell.h, -planWidth / 2, -planHeight / 2, cell.w, cell.h);
     }
   }
 

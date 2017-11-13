@@ -26,7 +26,11 @@ var sprites = [],
     myplan = null,
     eatfood = null,
     foodDate = null,
-    dieNum = 0;
+    planeDate = null,
+    dieNum = 0,
+    planLeft = false,
+    planRight = false,
+    planMiddle = false;
 
 window.onkeydown = function(event){
     switch(event.keyCode){
@@ -101,7 +105,7 @@ document.getElementById("zidang1").onclick = function(){
 }
 document.getElementById("zidang2").onclick = function(){
     if(myplan){
-        myplan.fireUp = 3;
+        myplan.fullPlan = true;
     }
 }
 function boom(plan){
@@ -273,7 +277,12 @@ var stage = {
                             break;
                         case "SpeedUP":myplan.firePerFrame = myplan.firePerFrame<=10?10:myplan.firePerFrame-10;
                             break;
-                        case "God":myplan.god = true;setTimeout(function(){myplan.god = false} , 15000);
+                        case "God":myplan.god = true;
+                            if(myplan.fireUp >=3){
+                                setTimeout(function(){myplan.god = false} , 15000);
+                            }else{
+                                setTimeout(function(){myplan.god = false} , 7000);
+                            }
                             break;
                         case "fireUP": myplan.fireUp = myplan.fireUp>=3? myplan.fireUp:  myplan.fireUp+1;
                         default:break;
@@ -293,7 +302,9 @@ var stage = {
                     stage.myplanReborn(myplan);
                 }
             }
-
+            if(planLeft === true&& planMiddle===true&&planMiddle===true){
+                myplan.fullPlan = true;
+            }
             this.paint();//遍历sprites并且在canvas绘制sprite，sprites属性有start，badplan,food,mypaln,这个是按顺序的
         });
 
@@ -310,8 +321,10 @@ var stage = {
             //道具掉落
             if(foodDate===null){
                 foodDate = new Date();
+                planeDate = new Date();
             }else {
                 var nowFoodDate = new Date();
+                //var planeFoodDate = new Date();
                 if(nowFoodDate-foodDate>5000){
                     var createFood = Math.random()<0.5?true:false;
                     if(createFood&&!eatfood.visible){
@@ -338,6 +351,24 @@ var stage = {
                         eatfood.visible = true;
                     }
                     foodDate = nowFoodDate;
+                }else if(nowFoodDate - planeDate > 13000){//飞机碎片掉落
+                    var createFood = Math.random()<0.8?true:false;
+                    if(createFood&&!eatfood.visible&&point>100){
+                        eatfood.left = Math.random()*canvas.width + 40;
+                        if(eatfood.left > canvas.width){
+                            eatfood.left = canvas.left - 80
+                        }
+                        eatfood.top = -30;
+                        if(Math.random() > 0.8){
+                            eatfood.kind = Math.random()>0.5? (img.src = "../planGame/images/planeOne.png",planLeft=true):(img.src ="../planGame/images/planeTwo.png",planRight=true);
+                        }else{
+                            img.src = "../planGame/images/planeMiddle.png";
+                            planMiddle = true;
+                        }
+                        eatfood.img = img;
+                        eatfood.visible = true;
+                    }
+                    planeDate = nowFoodDate;
                 }
             }
         }

@@ -179,22 +179,21 @@
       }
     },
     paint: function(sprite) {
+        if (this.dateCount === null) {
+            this.dateCount = new Date();
+        } else {
+            var newd = new Date();
+            var tc = newd - this.dateCount;
+            if (tc > sprite.firePerFrame) {
+                this.advance();
+                this.dateCount = newd;
+            }
+        }
       if(this.fullPlan == true){
           var img = new Image();
           img.src = "../planGame/images/myplan.png";
           ctx.drawImage(img, 0, 0, 80, 65, -40, -32.5, 80, 65);
       }else{
-          if (this.dateCount === null) {
-              this.dateCount = new Date();
-          } else {
-              //此处用于控制射速，firePerFrame值越小，射速越快
-              var newd = new Date();
-              var tc = newd - this.dateCount;
-              if (tc > sprite.firePerFrame) {
-                  this.advance();
-                  this.dateCount = newd;
-              }
-          }
           var cell = this.cells[this.cellIndex];
           ctx.drawImage(this.spritesheet, cell.x, cell.y, cell.w, cell.h, -planWidth / 2, -planHeight / 2, cell.w, cell.h);
       }
@@ -323,17 +322,22 @@
 var sss = 0;
   W.foodPainter = {
     paint: function(sprite) {
-        if(eatfood.kind === 'LevelUP'){
-            var cell = shengjiCells[sss];
-        }else if(eatfood.kind === 'SpeedUP'){
-            var cell = shesuCells[sss];
-        }else if(eatfood.kind === 'fireUP'){
-            var cell = huoliCells[sss];
-        }else if(eatfood.kind === 'God'){
-            var cell = hundunCells[sss];
+        if(eatfood.kind === 'planLeft' ||eatfood.kind === 'planRight'||eatfood.kind === 'planMiddle'){
+            ctx.drawImage(sprite.img, 0, 0, 55, 90, sprite.left,sprite.top, 55, 90);
+        }else{
+            if(eatfood.kind === 'LevelUP'){
+                var cell = shengjiCells[sss];
+            }else if(eatfood.kind === 'SpeedUP'){
+                var cell = shesuCells[sss];
+            }else if(eatfood.kind === 'fireUP'){
+                var cell = huoliCells[sss];
+            }else if(eatfood.kind === 'God'){
+                var cell = hundunCells[sss];
+            }
+            ctx.drawImage(sprite.img, cell.x, cell.y, cell.w, cell.h, sprite.left,sprite.top, cell.w, cell.h);
+            sss++;
         }
-        ctx.drawImage(sprite.img, cell.x, cell.y, cell.w, cell.h, sprite.left,sprite.top, cell.w, cell.h);
-        sss++;
+
     }
   }
 

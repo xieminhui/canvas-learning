@@ -105,7 +105,7 @@ document.getElementById("zidang1").onclick = function(){
 }
 document.getElementById("zidang2").onclick = function(){
     if(myplan){
-        myplan.fullPlan = true;
+        myplan.painter.fullPlan = true;
     }
 }
 function boom(plan){
@@ -285,6 +285,9 @@ var stage = {
                             }
                             break;
                         case "fireUP": myplan.fireUp = myplan.fireUp>=3? myplan.fireUp:  myplan.fireUp+1;
+                        case "planLeft": planLeft = true;break;
+                        case "planRight": planRight = true;break;
+                        case "planMiddle": planMiddle = true;break;
                         default:break;
                     }
                 }
@@ -302,8 +305,8 @@ var stage = {
                     stage.myplanReborn(myplan);
                 }
             }
-            if(planLeft === true&& planMiddle===true&&planMiddle===true){
-                myplan.fullPlan = true;
+            if(planLeft === true&& planRight===true&&planMiddle===true){
+                myplan.painter.fullPlan = true;
             }
             this.paint();//遍历sprites并且在canvas绘制sprite，sprites属性有start，badplan,food,mypaln,这个是按顺序的
         });
@@ -325,7 +328,7 @@ var stage = {
             }else {
                 var nowFoodDate = new Date();
                 //var planeFoodDate = new Date();
-                if(nowFoodDate-foodDate>5000){
+                if(nowFoodDate-foodDate>1000){
                     var createFood = Math.random()<0.5?true:false;
                     if(createFood&&!eatfood.visible){
                         eatfood.left = Math.random()*canvas.width + 40;
@@ -351,19 +354,19 @@ var stage = {
                         eatfood.visible = true;
                     }
                     foodDate = nowFoodDate;
-                }else if(nowFoodDate - planeDate > 13000){//飞机碎片掉落
+                }else if(nowFoodDate - planeDate > 2500){//飞机碎片掉落
                     var createFood = Math.random()<0.8?true:false;
-                    if(createFood&&!eatfood.visible&&point>100){
+                    if(createFood&&!eatfood.visible&&point>0){
                         eatfood.left = Math.random()*canvas.width + 40;
                         if(eatfood.left > canvas.width){
                             eatfood.left = canvas.left - 80
                         }
                         eatfood.top = -30;
-                        if(Math.random() > 0.8){
-                            eatfood.kind = Math.random()>0.5? (img.src = "../planGame/images/planeOne.png",planLeft=true):(img.src ="../planGame/images/planeTwo.png",planRight=true);
+                        if(Math.random() > 0.5){
+                            Math.random()>0.5? (img.src = "../planGame/images/planeOne.png", eatfood.kind = 'planLeft'):(img.src ="../planGame/images/planeTwo.png", eatfood.kind = 'planRight');
                         }else{
                             img.src = "../planGame/images/planeMiddle.png";
-                            planMiddle = true;
+                            eatfood.kind = 'planMiddle';
                         }
                         eatfood.img = img;
                         eatfood.visible = true;

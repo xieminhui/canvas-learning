@@ -78,6 +78,15 @@
   Sprite.prototype = {
     constructor: Sprite,
     paint: function() {
+      //增加boss
+      if(point > 2500){
+          sprites.foreach(function () {
+              if(this.name ==="badPlan"){
+                this.badKind = "boss";
+              }
+          })
+      }
+
       if (this.name === "badPlan") {
         this.update();//敌机的不同级别,
       }
@@ -382,7 +391,7 @@ var sss = 0;
 
   W.badPlanBehavior = [{
     execute: function(sprite, time) {
-      if (sprite.top > canvas.height || !sprite.visible) {
+      if (sprite.top > canvas.height&&sprite.badKind !=="boss" || !sprite.visible&&sprite.badKind !=="boss") {
         var random = Math.random();
 
         if (point >= 200 && point < 400) {
@@ -418,18 +427,24 @@ var sss = 0;
         sprite.planKind = null;
         sprite.xangle = Math.random() > 0.5 ? -Math.random() * 0.03 : Math.random() * 0.03;
         sprite.top = Math.random() * canvas.height - canvas.height;
+      }else if(sprite.top > canvas.height&&sprite.badKind ==="boss" || !sprite.visible&&sprite.badKind ==="boss"){
+
       }
       //产生随机数，用于是否发射子弹
-      if (sprite.top > 0) {
+      if (sprite.top > 0&&sprite.badKind !=="boss") {
         var num = sprite.badKind === 1 ? 0.002 : 0.01;
         var random = Math.random();
         if (random < num) {
           this.shot(sprite);//传入sprite，将sprite的left，top赋给子弹，子弹是从某台敌机发射出来的
         }
+      }else if(sprite.top > 0&&sprite.badKind ==="boss"){
+
       }
-      sprite.top += sprite.speed;//初始化top负数来的，每次加2
-      sprite.left += 3 * Math.sin(sprite.py);//left每次增加为随机数
-      sprite.py += sprite.xangle;
+      if(sprite.badKind !=="boss"){
+          sprite.top += sprite.speed;//初始化top负数来的，每次加2
+          sprite.left += 3 * Math.sin(sprite.py);//left每次增加为随机数
+          sprite.py += sprite.xangle;
+      }
     },
     shot: function(sprite) {
       this.addMissle(sprite, sprite.rotateAngle);

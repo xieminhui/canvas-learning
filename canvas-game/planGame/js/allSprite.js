@@ -2,8 +2,8 @@
   "use strict"
   var planWidth = 24,
     planHeight = 24,
-    missleWidth = 70,
-    missleHeight = 70,
+    missleWidth = 20,
+    missleHeight = 50,
     boomWidth = 60,
     enemyWidth = 40,
     enemyHeight = 35;
@@ -94,6 +94,9 @@
           ctx.restore();
           if(this.fireUp >= 3){
             this.hudunsrc = "../planGame/images/bottomImg4copy.png";
+          }
+          if(this.painter.fullPlan){
+              this.hudunsrc = "../planGame/images/bottomImg4.png";
           }
           if (this.god) {//无敌保护罩
             if(this.hudunsrc === null){
@@ -192,7 +195,7 @@
       if(this.fullPlan == true){
           var img = new Image();
           img.src = "../planGame/images/myplan.png";
-          ctx.drawImage(img, 0, 0, 80, 65, -40, -32.5, 80, 65);
+          ctx.drawImage(img, 0, 0, 50, 45, -25, -22.5, 50, 45);
       }else{
           var cell = this.cells[this.cellIndex];
           ctx.drawImage(this.spritesheet, cell.x, cell.y, cell.w, cell.h, -planWidth / 2, -planHeight / 2, cell.w, cell.h);
@@ -364,6 +367,8 @@ var sss = 0;
               img.src = "../planGame/images/zidang1.png";
           }else if(sprite.fireUp === 3){
               img.src = "../planGame/images/zidang2.png";
+          }else if(sprite.fireUp === "newMissle"){
+              img.src = "../planGame/images/bomb19.png";
           }
           ctx.drawImage(img, -missleWidth / 2 + 1, -missleHeight / 2 + 1, missleWidth, missleHeight);
       } else {

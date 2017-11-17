@@ -232,6 +232,8 @@ var stage = {
                             bp.blood-=75;
                         }else if(missle.fireUp === 3){
                             bp.blood-=100;
+                        }else if(missle.fireUp === "newMissle"){
+                            bp.blood -= 150;
                         }
 
                         if(bp.blood<=0){//血量小于等于0,敌机阵亡
@@ -307,6 +309,9 @@ var stage = {
             }
             if(planLeft === true&& planRight===true&&planMiddle===true){
                 myplan.painter.fullPlan = true;
+            }
+            if(myplan.painter.fullPlan){
+                myplan.fireUp = "newMissle";
             }
             this.paint();//遍历sprites并且在canvas绘制sprite，sprites属性有start，badplan,food,mypaln,这个是按顺序的
         });

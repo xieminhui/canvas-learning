@@ -7,7 +7,7 @@
         boomWidth = 60,
         enemyWidth = 40,
         enemyHeight = 35,
-        bossWidth = 250,
+        bossWidth = 280,
         bossHeight = 280;
     var bossObj = {
         bossCount :0,
@@ -128,7 +128,7 @@
                     }
                 } else {
                     this.painter.paint(this);
-                }
+            }
             }
         },
         //update中execute用来更改不用name的属性值，而paint()用来将不用的东西花在canvas上
@@ -366,7 +366,7 @@
             //子弹坐标改变，实现子弹飞行
             sprite.left -= sprite.velocityX;
             sprite.top -= sprite.velocityY;
-            //超出canvas的子弹小不显示
+            //超出canvas的子弹不显示
             if (sprite.left < -missleWidth / 2 || sprite.top < -missleHeight / 2 || sprite.left > canvas.width + missleWidth / 2 || sprite.top > canvas.height + missleHeight / 2) {
                 sprite.visible = false;
             }
@@ -440,22 +440,22 @@
             } else if (!sprite.visible && sprite.levelKind === "boss" &&!bossObj.bossLock) {
                 if (bossObj.bossOne ) {
                     sprite.badKind = 7;
-                    sprite.fullBlood = 150;
+                    sprite.fullBlood = 1000;
                     bossObj.bossTwo = true;
                     bossObj.bossOne = false;
                 } else if (bossObj.bossTwo) {
                     sprite.badKind = 8;
-                    sprite.fullBlood = 150;
+                    sprite.fullBlood = 1000;
                     bossObj.bossThree = true;
                     bossObj.bossTwo = false;
                 } else if (bossObj.bossThree) {
                     sprite.badKind = 9;
-                    sprite.fullBlood = 150;
+                    sprite.fullBlood = 1000;
                     bossObj.bossfour = true;
                     bossObj.bossThree = false;
                 } else if(!bossObj.bossOne){
                     sprite.badKind = 6;
-                    sprite.fullBlood = 100;
+                    sprite.fullBlood = 1000;
                     bossObj.bossOne = true;
                     // sprite.bossCount++;
                     // if(sprite.bossCount >= 2){
@@ -518,7 +518,7 @@
             switch (sprite.badKind) {
                 case 1:
                     img.src = "../planGame/image/ship.png"
-                    ctx.drawImage(img, 120, 0, planWidth, planWidth, -planWidth / 2, -planHeight / 2, planWidth, planWidth);
+                    ctx.drawImage(img, 96, 0, 24, 24, -24 / 2, -24 / 2, 24, 24);
                     sprite.planKind = 0;//机机型号
                     break;
 
@@ -573,29 +573,42 @@
                     sprite.planKind = 5;
                     break;
                 case 6:
+                    if(!bossObj.bossOne&&bossObj.hasOwnProperty('bossTwo')||bossObj.hasOwnProperty('bossThere')||bossObj.hasOwnProperty('bossFour')){
+                        break;
+                    }
                     img.src = "../planGame/images/boss1_0.png";
                     ctx.drawImage(img, 0, 0, bossWidth, bossHeight, -bossWidth / 2, -bossHeight / 2, bossWidth, bossHeight);
                     break;
                 case 7:
+                    if(!bossObj.bossTwo&&bossObj.hasOwnProperty('bossThere')||bossObj.hasOwnProperty('bossFour')){
+                        break;
+                    }
                     img.src = "../planGame/images/boss3_0.png";
                     ctx.drawImage(img, 0, 0, bossWidth, bossHeight, -bossWidth / 2, -bossHeight / 2, bossWidth, bossHeight);
                     break;
                 case 8:
+                    if(!bossObj.bossThree&&bossObj.hasOwnProperty('bossFour')){
+                        break;
+                    }
                     img.src = "../planGame/images/boss4c_0.png";
                     ctx.drawImage(img, 0, 0, bossWidth, bossHeight, -bossWidth / 2, -bossHeight / 2, bossWidth, bossHeight);
                     break;
                 case 9:
+                    if(!bossObj.bossfour){
+                        break;
+                    }
                     img.src = "../planGame/images/8.png";
                     ctx.drawImage(img, 0, 0, bossWidth, bossHeight, -bossWidth / 2, -bossHeight / 2, bossWidth, bossHeight);
                     break;
             }
-
-            //敌机血条
-            ctx.strokeStyle = "#FFF";
-            ctx.fillStyle = "#F00";
-            var bloodHeight = 1;
-            ctx.strokeRect(-enemyWidth / 2 + 1, planHeight + bloodHeight + 3, enemyWidth + 2, bloodHeight + 2);
-            ctx.fillRect(-enemyWidth / 2 + 1, planHeight + bloodHeight + 3, enemyWidth * sprite.blood / sprite.fullBlood, bloodHeight);
+            if(sprite.badKind===1||sprite.badKind===2||sprite.badKind===3||sprite.badKind===4||sprite.badKind===5){
+                //敌机血条
+                ctx.strokeStyle = "#FFF";
+                ctx.fillStyle = "#F00";
+                var bloodHeight = 1;
+                ctx.strokeRect(-enemyWidth / 2 + 1, planHeight/2 + bloodHeight + 10, enemyWidth + 1, bloodHeight + 2);
+                ctx.fillRect(-enemyWidth / 2 + 1, planHeight/2 + bloodHeight + 10, enemyWidth * sprite.blood / sprite.fullBlood, bloodHeight);
+            }
         }
     }
 

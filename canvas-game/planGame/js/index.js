@@ -237,30 +237,15 @@ var stage = {
             var missle = this;
             sprites.foreach(function () {
                 var bp = this;
-                if (bp.name === "badPlan" && bp.visible && missle.visible&&bp.levelKind !=="boss") {
+                if (bp.name === "badPlan" && bp.visible && missle.visible) {
                     var juli = Math.sqrt(Math.pow(missle.left - bp.left, 2) + Math.pow(missle.top - bp.top, 2));
-                    if (juli < (enemySize().w / 2 + missle.width / 2) && missle.isgood) {//这里用isgood判断是哪方子弹，true表示我方激光炮
-                        missle.visible = false;
-                        if (missle.fireUp === 1) {
-                            bp.blood -= 50;
-                        } else if (missle.fireUp === 2) {
-                            bp.blood -= 75;
-                        } else if (missle.fireUp === 3) {
-                            bp.blood -= 100;
-                        } else if (missle.fireUp === "newMissle") {
-                            bp.blood -= 150;
-                        }
-
-                        if (bp.blood <= 0) {//血量小于等于0,敌机阵亡
-                            bp.visible = false;
-                            bp.planKind = null;
-                            point += bp.badKind;//得分加1
-                            boom(bp);
-                       }
+                    var width;
+                    if(bp.badKind!==6||bp.badKind!==7||bp.badKind!==8||bp.badKind!==9){
+                        width = enemySize().w;
+                    }else if(bp.levelKind ==="boss"&&bp.badKind===6||bp.badKind===7||bp.badKind===8||bp.badKind===9){
+                        width = bossSize().w;
                     }
-                }else if(bp.name === "badPlan" && bp.visible && missle.visible&&bp.levelKind ==="boss"){
-                    var juli = Math.sqrt(Math.pow(missle.left - bp.left, 2) + Math.pow(missle.top - bp.top, 2));
-                    if (juli < (bossSize().w / 2 + missle.width / 2) && missle.isgood) {//这里用isgood判断是哪方子弹，true表示我方激光炮
+                    if (juli < (width / 2 + missle.width / 2) && missle.isgood) {//这里用isgood判断是哪方子弹，true表示我方激光炮
                         missle.visible = false;
                         if (missle.fireUp === 1) {
                             bp.blood -= 50;
@@ -271,28 +256,28 @@ var stage = {
                         } else if (missle.fireUp === "newMissle") {
                             bp.blood -= 150;
                         }
-
-                        if (bp.blood <= 0) {//血量小于等于0,敌机阵亡
-                            bp.visible = false;
-                            bp.planKind = null;
-                            point += 1000;//得分加1
-                            boom(bp);
-                            bossData().bossLock = false;
-                            if(bossData().bossfour){
-                                bossData().bossfour =false;
-                                bossData().bossLock = true;
+                        if(bp.badKind!==6||bp.badKind!==7||bp.badKind!==8||bp.badKind!==9){
+                            if (bp.blood <= 0) {//血量小于等于0,敌机阵亡
+                                bp.visible = false;
+                                bp.planKind = null;
+                                point += bp.badKind;//得分加1
+                                boom(bp);
                             }
-                            // if(bossData().bossOne){
-                            //     bossData().bossOne =false;
-                            // }else if(bossData().bossTwo){
-                            //     bossData().bossTwo = false;
-                            // }else if(bossData().bossThree){
-                            //     bossData().bossThree = false;
-                            // }else if(bossData().bossfour){
-                            //     bossData().bossfour =false;
-                            //     bossData().bossLock = true;
-                            // }
                         }
+                        if(bp.badKind===6||bp.badKind===7||bp.badKind===8||bp.badKind===9){
+                            if (bp.blood <= 0) {//血量小于等于0,敌机阵亡
+                                bp.visible = false;
+                                bp.planKind = null;
+                                point += 1000;//得分加1
+                                boom(bp);
+                                bossData().bossLock = false;
+                                if (bossData().bossfour) {
+                                    bossData().bossfour = false;
+                                    bossData().bossLock = true;
+                                }
+                            }
+                        }
+
                     }
                 }
             });
@@ -361,26 +346,32 @@ var stage = {
                 }
             }
             //碰撞检测，敌机跟战机碰撞
-            if (this.name === "badPlan" && myplan.visible && !myplan.god&&this.levelKind !=="boss") {
+            if (this.name === "badPlan" && myplan.visible && !myplan.god) {
                 var juli = Math.sqrt(Math.pow(this.left - myplan.left, 2) + Math.pow(this.top - myplan.top, 2));
-                if (juli < planSize().w/2 + enemySize().w/2) {
-                    myplan.visible = false;
-                    dieNum++;
-                    this.visible = false;
-                    this.planKind = null;
-                    boom(this);
-                    boom(myplan);
-                    stage.myplanReborn(myplan);
+                var width;
+                if(this.badKind!==6||this.badKind!==7||this.badKind!==8||this.badKind!==9){
+                    width = enemySize().w;
+                }else if(this.levelKind ==="boss"&&this.badKind===6||this.badKind===7||this.badKind===8||this.badKind===9){
+                    width = bossSize().w;
                 }
-            }else if(this.name === "badPlan" && myplan.visible && !myplan.god&&this.levelKind ==="boss"){
-                var juli = Math.sqrt(Math.pow(this.left - myplan.left, 2) + Math.pow(this.top - myplan.top, 2));
-                if (juli < planSize().w/2 + bossSize().w/2) {
-                    myplan.visible = false;
-                    dieNum++;
-                    this.visible = false;
-                    this.planKind = null;
-                    boom(myplan);
-                    stage.myplanReborn(myplan);
+
+                if (juli < planSize().w/2 + width/2) {
+                    if(this.badKind!==6||this.badKind!==7||this.badKind!==8||this.badKind!==9){
+                        myplan.visible = false;
+                        dieNum++;
+                        this.visible = false;
+                        this.planKind = null;
+                        boom(this);
+                        boom(myplan);
+                        stage.myplanReborn(myplan);
+                    }else if(this.levelKind ==="boss"&&this.badKind===6||this.badKind===7||this.badKind===8||this.badKind===9) {
+                        myplan.visible = false;
+                        dieNum++;
+                        this.visible = false;
+                        this.planKind = null;
+                        boom(myplan);
+                        stage.myplanReborn(myplan);
+                    }
                 }
             }
             if (planLeft === true && planRight === true && planMiddle === true) {

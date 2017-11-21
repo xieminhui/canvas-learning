@@ -268,8 +268,11 @@ var stage = {
                             if (bp.blood <= 0) {//血量小于等于0,敌机阵亡
                                 bp.visible = false;
                                 bp.planKind = null;
-                                point += 1000;//得分加1
+                                point += 1000;//得分加1000
                                 boom(bp);
+                                if(bp.badKind ===6){
+                                    bossData().bossOneMissle.shot = false;
+                                }
                                 bossData().bossLock = false;
                                 if (bossData().bossfour) {
                                     bossData().bossfour = false;

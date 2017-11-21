@@ -11,7 +11,11 @@
         bossHeight = 280;
     var bossObj = {
         bossCount :0,
-        bossLock : false
+        bossLock : false,
+        bossOneMissle : {
+            rotateAngle : Math.PI,
+            shot : true
+        }
     }
 
     //精灵类
@@ -86,7 +90,7 @@
         constructor: Sprite,
         paint: function () {
             //增加boss
-            if (point > 2500) {
+            if (point > 2) {
                 if (this.name === "badPlan") {
                     this.levelKind = "boss";
                 }
@@ -388,10 +392,19 @@
                 }
                 ctx.drawImage(img, -missleWidth / 2 + 1, -missleHeight / 2 + 1, missleWidth, missleHeight);
             } else {
-                ctx.beginPath();
-                ctx.fillStyle = "#f00";
-                ctx.arc(0, 0, 3, 0, 2 * Math.PI);//前面的操作已经移动了坐标轴，移动到子丹
-                ctx.fill();
+                if(sprite.type ===6){
+                    ctx.beginPath();
+                    ctx.fillStyle = 'rgb('+51+','+204+',255)';
+                    ctx.arc(0, 0, 3, 0, 2 * Math.PI);//前面的操作已经移动了坐标轴，移动到子丹
+                    ctx.fill()
+                    //ctx.strokeStyle = "#9CFF00";
+                    ///drawSpirograph(ctx,5*(2+2)/(2+1),-8*(1+3)/(1+1),2);
+                }else{
+                    ctx.beginPath();
+                    ctx.fillStyle = "#f00";
+                    ctx.arc(0, 0, 3, 0, 2 * Math.PI);//前面的操作已经移动了坐标轴，移动到子丹
+                    ctx.fill();
+                }
             }
         }
     }
@@ -477,8 +490,27 @@
                 if (random < num) {
                     this.shot(sprite);//传入sprite，将sprite的left，top赋给子弹，子弹是从某台敌机发射出来的
                 }
-            } else if (sprite.top === 100  && sprite.levelKind === "boss") {
+            } else if (sprite.top >= 100  && sprite.levelKind === "boss") {
+                if(sprite.badKind ===6){
+                    if (sprite.dateCount == null) {
+                        sprite.dateCount = new Date();
+                    } else {
+                        var nowdate = new Date();
 
+                        if(nowdate - sprite.dateCount > 2000 &&bossObj.bossOneMissle.shot){
+                            this.shot(sprite, bossObj.bossOneMissle.rotateAngle);
+                            this.dateCount = nowdate;
+                            bossObj.bossOneMissle.rotateAngle -= 0.2;
+                        }
+                    }
+
+                }else if(sprite.badKind ===7){
+
+                }else if(sprite.badKind ===8){
+
+                }else if(sprite.badKind ===9){
+
+                }
             }
             if (sprite.badKind===1||sprite.badKind===2||sprite.badKind===3||sprite.badKind===24||sprite.badKind===5||sprite.levelKind !== "boss") {
                 sprite.top += sprite.speed;//初始化top负数来的，每次加2
@@ -490,8 +522,8 @@
                 }
             }
         },
-        shot: function (sprite) {
-            this.addMissle(sprite, sprite.rotateAngle);
+        shot: function (sprite,rotateAngle) {
+            this.addMissle(sprite, rotateAngle);
         },
         addMissle: function (sprite, angle) {
             for (var j = 0; j < missles.length; j++) {
@@ -504,6 +536,7 @@
                     missles[j].velocityX = missleSpeed * Math.sin(-missles[j].rotateAngle);
                     missles[j].velocityY = missleSpeed * Math.cos(-missles[j].rotateAngle);
                     missles[j].visible = true;
+                    missles[j].type = sprite.badKind;
                     break;
                 }
             }
@@ -611,7 +644,23 @@
             }
         }
     }
-
+    function drawSpirograph(ctx,R,r,O){
+        var x1 = R-O;
+        var y1 = 0;
+        var i  = 1;
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);
+        do {
+            if (i>20000) break;
+            var x2 = (R+r)*Math.cos(i*Math.PI/72) - (r+O)*Math.cos(((R+r)/r)*(i*Math.PI/72))
+            var y2 = (R+r)*Math.sin(i*Math.PI/72) - (r+O)*Math.sin(((R+r)/r)*(i*Math.PI/72))
+            ctx.lineTo(x2,y2);
+            x1 = x2;
+            y1 = y2;
+            i++;
+        } while (x2 != R-O && y2 != 0 );
+        ctx.stroke();
+    }
     W.planSize = function () {
         return {
             w: planWidth,
